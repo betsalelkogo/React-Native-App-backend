@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+
 const postSchema = new mongoose.Schema({
-  messagge: {
+  message: {
     type: String,
     required: true,
   },
@@ -9,4 +10,5 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
 });
+
 module.exports = mongoose.model("Post", postSchema);
