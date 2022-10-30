@@ -7,3 +7,9 @@ GET http://localhost:3000/post
 
 
 POST http://localhost:3000/post
+
+Content-Type: application/json
+{
+    "message":"this is my new message",
+    "sender": "123456"
+}
