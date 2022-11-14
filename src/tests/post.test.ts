@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 import Post from "../models/post_model";
 
 const newPostMessage1 = "This is first test post message";
-const newPostSender1 = "999001";
+const newPostSender1 = "999999";
 let newPostId1 = "";
 
 const newPostMessage2 = "This is second test post message";
-const newPostSender2 = "999002";
+const newPostSender2 = "888888";
 let newPostId2 = "";
 
 beforeAll(async () => {

@@ -17,10 +17,10 @@ const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const newPostMessage1 = "This is first test post message";
-const newPostSender1 = "999001";
+const newPostSender1 = "999999";
 let newPostId1 = "";
 const newPostMessage2 = "This is second test post message";
-const newPostSender2 = "999002";
+const newPostSender2 = "888888";
 let newPostId2 = "";
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield post_model_1.default.remove();
