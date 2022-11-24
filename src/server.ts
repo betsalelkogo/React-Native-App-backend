@@ -1,13 +1,12 @@
 import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import bodyParser from "body-parser";
-import postRouter from "./routes/post_route.js";
 const app = express();
+import dotenv from "dotenv";
 dotenv.config();
+import bodyParser from "body-parser";
 app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
 app.use(bodyParser.json());
 
+import mongoose from "mongoose";
 mongoose.connect(process.env.DATABASE_URL); //,{useNewUrlParser:true})
 const db = mongoose.connection;
 db.on("error", (error) => {
@@ -19,6 +18,10 @@ db.once("open", () => {
 
 app.use("/public", express.static("public"));
 
+import authRouter from "./routes/auth_route";
+app.use("/auth", authRouter);
+
+import postRouter from "./routes/post_route";
 app.use("/post", postRouter);
 
 export = app;
