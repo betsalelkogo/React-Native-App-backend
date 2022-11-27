@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  refresh_tokens: {
+    type: [String],
+  },
 });
 
 export = mongoose.model("User", userSchema);
