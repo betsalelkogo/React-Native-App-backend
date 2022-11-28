@@ -4,7 +4,7 @@
   "description": "My first web app",
   "main": "app.js",
   "scripts": {
-    "test": "tsc && jest --detectOpenHandles --forceExit ./dist/tests",
+    "test": "tsc && jest --detectOpenHandles --forceExit ./dist/src/tests",
     "start": "tsc && node dist/app.js",
     "lint": "eslint . --ext .ts",
     "devstart": "nodemon ./src/app.ts"

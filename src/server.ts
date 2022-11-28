@@ -18,10 +18,10 @@ db.once("open", () => {
 
 app.use("/public", express.static("public"));
 
-import authRouter from "./routes/auth_route.js";
+import authRouter from "../src/routes/auth_route";
 app.use("/auth", authRouter);
 
-import postRouter from "./routes/post_route.js";
+import postRouter from "../src/routes/post_route";
 app.use("/post", postRouter);
 
 export = app;

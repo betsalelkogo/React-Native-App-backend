@@ -99,7 +99,7 @@ const refresh = async (req: Request, res: Response) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    const userObj = await User.findById(user.id);
+    const userObj = null; //await User.findById(user.id);
     if (userObj == null) return sendError(res, "fail validating token");
 
     if (!userObj.refresh_tokens.includes(refreshToken)) {
@@ -131,7 +131,7 @@ const logout = async (req: Request, res: Response) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-    const userObj = await User.findById(user.id);
+    const userObj = null; //await User.findById(user.id);
     if (userObj == null) return sendError(res, "fail validating token");
 
     if (!userObj.refresh_tokens.includes(refreshToken)) {
@@ -160,7 +160,7 @@ const authenticateMiddleware = async (
   if (token == null) return sendError(res, "authentication missing");
   try {
     const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.body.userId = user.id;
+    req.body.userId = null; //user.id;
     console.log("token user: " + user);
     next();
   } catch (err) {
