@@ -2,7 +2,6 @@ import User from "../models/user_model";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { use } from "../server";
 
 function sendError(res: Response, error: string) {
   res.status(400).send({
@@ -21,24 +20,22 @@ const register = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ email: email });
     if (user != null) {
-      sendError(res, "user already registered, try a different name");
+      return sendError(res, "user already registered, try a different name");
     }
-  } catch (err) {
-    console.log("error: " + err);
-    sendError(res, "fail checking user");
-  }
 
-  try {
     const salt = await bcrypt.genSalt(10);
     const encryptedPwd = await bcrypt.hash(password, salt);
-    let newUser = new User({
+    const newUser = new User({
       email: email,
       password: encryptedPwd,
     });
-    newUser = await newUser.save();
-    res.status(200).send(newUser);
+    await newUser.save();
+    return res.status(200).send({
+      email: email,
+      _id: newUser._id,
+    });
   } catch (err) {
-    sendError(res, "fail ...");
+    return sendError(res, "fail ...");
   }
 };
 
@@ -80,7 +77,7 @@ const login = async (req: Request, res: Response) => {
     return res.status(200).send(tokens);
   } catch (err) {
     console.log("error: " + err);
-    sendError(res, "fail checking user");
+    return sendError(res, "fail checking user");
   }
 };
 
@@ -90,16 +87,18 @@ function getTokenFromRequest(req: Request): string {
   return authHeader.split(" ")[1];
 }
 
+type TokenInfo = {
+  id: string;
+};
 const refresh = async (req: Request, res: Response) => {
   const refreshToken = getTokenFromRequest(req);
   if (refreshToken == null) return sendError(res, "authentication missing");
 
   try {
-    const user = await jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET
+    const user: TokenInfo = <TokenInfo>(
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     );
-    const userObj = null; //await User.findById(user.id);
+    const userObj = await User.findById(user.id);
     if (userObj == null) return sendError(res, "fail validating token");
 
     if (!userObj.refresh_tokens.includes(refreshToken)) {
@@ -127,11 +126,10 @@ const logout = async (req: Request, res: Response) => {
   if (refreshToken == null) return sendError(res, "authentication missing");
 
   try {
-    const user = await jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET
+    const user = <TokenInfo>(
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     );
-    const userObj = null; //await User.findById(user.id);
+    const userObj = await User.findById(user.id);
     if (userObj == null) return sendError(res, "fail validating token");
 
     if (!userObj.refresh_tokens.includes(refreshToken)) {
@@ -145,7 +143,7 @@ const logout = async (req: Request, res: Response) => {
       1
     );
     await userObj.save();
-    res.status(200).send();
+    return res.status(200).send();
   } catch (err) {
     return sendError(res, "fail validating token");
   }
@@ -159,10 +157,10 @@ const authenticateMiddleware = async (
   const token = getTokenFromRequest(req);
   if (token == null) return sendError(res, "authentication missing");
   try {
-    const user = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.body.userId = null; //user.id;
+    const user = <TokenInfo>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.body.userId = user.id;
     console.log("token user: " + user);
-    next();
+    return next();
   } catch (err) {
     return sendError(res, "fail validating token");
   }
