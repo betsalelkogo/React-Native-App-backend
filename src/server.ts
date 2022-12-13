@@ -7,6 +7,9 @@ if (process.env.NODE_ENV == "test") {
 
 import express from "express";
 const app = express();
+import http from "http";
+const server = http.createServer(app);
+
 import bodyParser from "body-parser";
 app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
 app.use(bodyParser.json());
@@ -23,15 +26,14 @@ db.once("open", () => {
 
 app.use("/public", express.static("public"));
 
-import authRouter from "./routes/auth_route";
+import authRouter from "./routes/auth_route.js";
 app.use("/auth", authRouter);
 
-import postRouter from "./routes/post_route";
+import postRouter from "./routes/post_route.js";
 app.use("/post", postRouter);
 
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
-
 if (process.env.NODE_ENV == "development") {
   const options = {
     definition: {
@@ -49,4 +51,4 @@ if (process.env.NODE_ENV == "development") {
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 }
 
-export = app;
+export = server;

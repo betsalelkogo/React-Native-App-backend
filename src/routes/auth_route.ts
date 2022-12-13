@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import auth from "../controllers/auth";
+import auth from "../controllers/auth.js";
 
 /**
  * @swagger
