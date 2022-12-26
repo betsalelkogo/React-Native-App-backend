@@ -5,14 +5,13 @@ export = (
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
 ) => {
-  const echoHandler = (payload: any) => {
-    socket.emit("echo:echo_res", payload);
+  const sendMessage = async (payload) => {
+    const to = payload.to;
+    const message = payload.message;
+    const from = socket.data.user;
+
+    io.to(to).emit("chat:message", { to: to, from: from, message: message });
   };
 
-  const readHandler = (payload: any) => {
-    // ...
-  };
-
-  socket.on("echo:echo", echoHandler);
-  socket.on("echo:read", readHandler);
+  socket.on("chat:send_message", sendMessage);
 };
