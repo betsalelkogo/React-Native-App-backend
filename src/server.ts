@@ -25,12 +25,19 @@ db.once("open", () => {
 });
 
 app.use("/public", express.static("public"));
+app.use("/uploads", express.static("uploads"));
 
 import authRouter from "./routes/auth_route.js";
 app.use("/auth", authRouter);
 
 import postRouter from "./routes/post_route.js";
 app.use("/post", postRouter);
+
+import studentRouter from "./routes/student_route.js";
+app.use("/student", studentRouter);
+
+import fileRouter from "./routes/file_route.js";
+app.use("/file", fileRouter);
 
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";

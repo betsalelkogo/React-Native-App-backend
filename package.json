@@ -7,10 +7,12 @@
     "test": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests",
     "start": "tsc && node dist/src/app.js",
     "lint": "eslint . --ext .ts",
-    "devstart": "nodemon ./src/app.ts",
+    "dev": "nodemon ./src/app.ts",
     "testAuth": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/auth.test.js",
     "testPost": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/post.test.js",
-    "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/socket.test.js"
+    "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/socket.test.js",
+    "testStudent": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/student.test.js",
+    "testFile": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/file.test.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,8 @@
     "http": "*",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
+    "multer": "*",
+    "mz": "^2.7.0",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
     "ts-jest": "^29.0.3"
@@ -39,6 +43,8 @@
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.1",
     "@types/jsonwebtoken": "^8.5.9",
+    "@types/multer": "^1.4.7",
+    "@types/mz": "^2.7.4",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
