@@ -5,7 +5,11 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  title: {
+    type: String,
+    required: true,
+  },
+  detail: {
     type: String,
     required: true,
   },

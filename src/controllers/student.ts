@@ -28,7 +28,8 @@ const addNewStudent = async (req: Request, res: Response) => {
 
   const student = new Student({
     _id: req.body._id,
-    name: req.body.name,
+    title: req.body.title,
+    detail: req.body.detail,
     avatarUrl: req.body.avatarUrl,
   });
 
