@@ -139,6 +139,6 @@ router.post("/", auth.authenticateMiddleware, post.addNewPost);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.put("/:id", auth.authenticateMiddleware, post.putPostById);
+router.put("/:id", auth.authenticateMiddleware, post.getPostById);
 
 export = router;
