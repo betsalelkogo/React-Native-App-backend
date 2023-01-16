@@ -8,7 +8,11 @@ const studentSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
-    name: {
+    title: {
+        type: String,
+        required: true,
+    },
+    detail: {
         type: String,
         required: true,
     },

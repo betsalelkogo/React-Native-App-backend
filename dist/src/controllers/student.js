@@ -37,7 +37,8 @@ const addNewStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     console.log(req.body);
     const student = new student_model_1.default({
         _id: req.body._id,
-        name: req.body.name,
+        title: req.body.title,
+        detail: req.body.detail,
         avatarUrl: req.body.avatarUrl,
     });
     try {
