@@ -3,15 +3,14 @@
  * @swagger
  * tags:
  *   name: Post
- *   description: The Posts API
+ *   description: The Post API
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const express_1 = __importDefault(require("express"));
+const post_1 = __importDefault(require("../controllers/post"));
 const router = express_1.default.Router();
-const post_js_1 = __importDefault(require("../controllers/post.js"));
-const auth_js_1 = __importDefault(require("../controllers/auth.js"));
 /**
  * @swagger
  * components:
@@ -19,18 +18,28 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *     Post:
  *       type: object
  *       required:
- *         - message
- *         - sender
+ *         - id
+ *         - title
+ *         - details
+ *         - avatarUrl
  *       properties:
- *         message:
+ *         id:
  *           type: string
- *           description: The post text
- *         sender:
+ *           description: The post id
+ *         title:
  *           type: string
- *           description: The sending user id
+ *           description: The post title
+ *         details:
+ *           type: string
+ *           description: The post details
+ *         avatarUrl:
+ *           type: string
+ *           description: The post avatar url
  *       example:
- *         message: 'this is my new post'
- *         sender: '12342345234556'
+ *         id: '123'
+ *         title: 'Oren'
+ *         details: 'Oren Test'
+ *         avatarUrl: 'www.mysute/oren.jpg'
  */
 /**
  * @swagger
@@ -38,14 +47,6 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *   get:
  *     summary: get list of post from server
  *     tags: [Post]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: sender
- *         schema:
- *           type: string
- *           description: filter the posts according to the given sender id
  *     responses:
  *       200:
  *         description: the list of posts
@@ -57,7 +58,7 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *                  $ref: '#/components/schemas/Post'
  *
  */
-router.get("/", post_js_1.default.getAllPosts);
+router.get("/", post_1.default.getAllPosts);
 /**
  * @swagger
  * /post/{id}:
@@ -82,15 +83,13 @@ router.get("/", post_js_1.default.getAllPosts);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.get("/:id", auth_js_1.default.authenticateMiddleware, post_js_1.default.getPostById);
+router.get("/:id", post_1.default.getPostById);
 /**
  * @swagger
  * /post:
  *   post:
  *     summary: add a new post
  *     tags: [Post]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -106,37 +105,6 @@ router.get("/:id", auth_js_1.default.authenticateMiddleware, post_js_1.default.g
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.post("/", auth_js_1.default.authenticateMiddleware, post_js_1.default.addNewPost);
-/**
- * @swagger
- * /post/{id}:
- *   put:
- *     summary: update existing post by id
- *     tags: [Post]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         requiered: true
- *         schema:
- *           type: string
- *           description: the updated post id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Post'
- *     responses:
- *       200:
- *         description: the requested post
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Post'
- *
- */
-router.put("/:id", auth_js_1.default.authenticateMiddleware, post_js_1.default.getPostById);
+router.post("/", post_1.default.addNewPost);
 module.exports = router;
 //# sourceMappingURL=post_route.js.map

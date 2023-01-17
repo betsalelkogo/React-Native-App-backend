@@ -15,18 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const post_model_1 = __importDefault(require("../models/post_model"));
+const message_model_1 = __importDefault(require("../models/message_model"));
 const user_model_1 = __importDefault(require("../models/user_model"));
 const userEmail = "user1@gmail.com";
 const userPassword = "12345";
 let accessToken = "";
 let refreshToken = "";
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield post_model_1.default.remove();
+    yield message_model_1.default.remove();
     yield user_model_1.default.remove();
 }));
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield post_model_1.default.remove();
+    yield message_model_1.default.remove();
     yield user_model_1.default.remove();
     mongoose_1.default.connection.close();
 }));

@@ -16,7 +16,7 @@ const app_1 = __importDefault(require("../app"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const socket_io_client_1 = __importDefault(require("socket.io-client"));
 const supertest_1 = __importDefault(require("supertest"));
-const post_model_1 = __importDefault(require("../models/post_model"));
+const message_model_1 = __importDefault(require("../models/message_model"));
 const user_model_1 = __importDefault(require("../models/user_model"));
 const userEmail = "user1@gmail.com";
 const userEmail2 = "user2@gmail.com";
@@ -55,7 +55,7 @@ const connectUser = (userEmail, userPassword) => __awaiter(void 0, void 0, void 
 });
 describe("my awesome project", () => {
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield post_model_1.default.deleteMany();
+        yield message_model_1.default.deleteMany();
         yield user_model_1.default.deleteMany();
         client1 = yield connectUser(userEmail, userPassword);
         client2 = yield connectUser(userEmail2, userPassword);
