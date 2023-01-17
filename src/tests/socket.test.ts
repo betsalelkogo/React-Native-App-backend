@@ -4,7 +4,7 @@ import Client, { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 import request from "supertest";
-import Post from "../models/post_model";
+import Post from "../models/message_model";
 import User from "../models/user_model";
 
 const userEmail = "user1@gmail.com";

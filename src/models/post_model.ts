@@ -1,11 +1,19 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-  message: {
+  _id: {
     type: String,
     required: true,
   },
-  sender: {
+  title: {
+    type: String,
+    required: true,
+  },
+  detail: {
+    type: String,
+    required: true,
+  },
+  avatarUrl: {
     type: String,
     required: true,
   },

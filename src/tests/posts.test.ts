@@ -1,12 +1,12 @@
 import request from "supertest";
 import app from "../server";
 import mongoose from "mongoose";
-import Student from "../models/student_model";
+import Post from "../models/post_model";
 
-let newStudenId = "";
+let newPostId = "";
 
 beforeAll(async () => {
-  await Student.remove(); //{ 'id: ': newStudenId })
+  await Post.remove();
   console.log("beforeAll");
 });
 
@@ -15,25 +15,25 @@ afterAll(async () => {
   mongoose.connection.close();
 });
 
-describe("Student Tests", () => {
-  test("add new student", async () => {
-    const response = await request(app).post("/student").send({
+describe("Post Tests", () => {
+  test("add new Post", async () => {
+    const response = await request(app).post("/post").send({
       _id: 1234,
       name: "Oren",
       avatarUrl: "www.localhost:3000/oren.jpg",
     });
     expect(response.statusCode).toEqual(200);
-    newStudenId = response.body._id;
+    newPostId = response.body._id;
   });
 
-  test("get all students", async () => {
-    const response = await request(app).get("/student");
+  test("get all Posts", async () => {
+    const response = await request(app).get("/post");
     expect(response.statusCode).toEqual(200);
     expect(response.body.length).toBeGreaterThanOrEqual(1);
   });
 
-  test("get student by id", async () => {
-    const response = await request(app).get("/student/" + newStudenId);
+  test("get Post by id", async () => {
+    const response = await request(app).get("/post/" + newPostId);
     expect(response.statusCode).toEqual(200);
   });
 });

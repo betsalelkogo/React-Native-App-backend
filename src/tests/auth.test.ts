@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../server";
 import mongoose from "mongoose";
-import Post from "../models/post_model";
+import Post from "../models/message_model";
 import User from "../models/user_model";
 
 const userEmail = "user1@gmail.com";

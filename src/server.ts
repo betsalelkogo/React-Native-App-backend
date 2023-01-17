@@ -30,11 +30,11 @@ app.use("/uploads", express.static("uploads"));
 import authRouter from "./routes/auth_route.js";
 app.use("/auth", authRouter);
 
+import messageRouter from "./routes/message_route.js";
+app.use("/message", messageRouter);
+
 import postRouter from "./routes/post_route.js";
 app.use("/post", postRouter);
-
-import studentRouter from "./routes/student_route.js";
-app.use("/student", studentRouter);
 
 import fileRouter from "./routes/file_route.js";
 app.use("/file", fileRouter);

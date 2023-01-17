@@ -2,13 +2,12 @@
  * @swagger
  * tags:
  *   name: Post
- *   description: The Posts API
+ *   description: The Post API
  */
 
 import express from "express";
+import post from "../controllers/post";
 const router = express.Router();
-import post from "../controllers/post.js";
-import auth from "../controllers/auth.js";
 
 /**
  * @swagger
@@ -17,18 +16,28 @@ import auth from "../controllers/auth.js";
  *     Post:
  *       type: object
  *       required:
- *         - message
- *         - sender
+ *         - id
+ *         - title
+ *         - details
+ *         - avatarUrl
  *       properties:
- *         message:
+ *         id:
  *           type: string
- *           description: The post text
- *         sender:
+ *           description: The post id
+ *         title:
  *           type: string
- *           description: The sending user id
+ *           description: The post title
+ *         details:
+ *           type: string
+ *           description: The post details
+ *         avatarUrl:
+ *           type: string
+ *           description: The post avatar url
  *       example:
- *         message: 'this is my new post'
- *         sender: '12342345234556'
+ *         id: '123'
+ *         title: 'Oren'
+ *         details: 'Oren Test'
+ *         avatarUrl: 'www.mysute/oren.jpg'
  */
 
 /**
@@ -37,14 +46,6 @@ import auth from "../controllers/auth.js";
  *   get:
  *     summary: get list of post from server
  *     tags: [Post]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: sender
- *         schema:
- *           type: string
- *           description: filter the posts according to the given sender id
  *     responses:
  *       200:
  *         description: the list of posts
@@ -82,7 +83,7 @@ router.get("/", post.getAllPosts);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.get("/:id", auth.authenticateMiddleware, post.getPostById);
+router.get("/:id", post.getPostById);
 
 /**
  * @swagger
@@ -90,8 +91,6 @@ router.get("/:id", auth.authenticateMiddleware, post.getPostById);
  *   post:
  *     summary: add a new post
  *     tags: [Post]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -107,38 +106,6 @@ router.get("/:id", auth.authenticateMiddleware, post.getPostById);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.post("/", auth.authenticateMiddleware, post.addNewPost);
-
-/**
- * @swagger
- * /post/{id}:
- *   put:
- *     summary: update existing post by id
- *     tags: [Post]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         requiered: true
- *         schema:
- *           type: string
- *           description: the updated post id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Post'
- *     responses:
- *       200:
- *         description: the requested post
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Post'
- *
- */
-router.put("/:id", auth.authenticateMiddleware, post.getPostById);
+router.post("/", post.addNewPost);
 
 export = router;
