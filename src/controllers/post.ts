@@ -17,6 +17,7 @@ const getAllPosts = async (req: Request, res: Response) => {
 };
 
 const getPostById = async (req: Request, res: Response) => {
+  console.log("getPostById");
   console.log(req.params.id);
   try {
     const posts = await Post.findById(req.params.id);

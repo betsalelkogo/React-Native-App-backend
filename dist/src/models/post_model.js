@@ -16,6 +16,10 @@ const postSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
+    userName: {
+        type: String,
+        required: true,
+    },
     avatarUrl: {
         type: String,
         required: true,

@@ -26,6 +26,7 @@ const getAllPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("getPostById");
     console.log(req.params.id);
     try {
         const posts = yield post_model_1.default.findById(req.params.id);
