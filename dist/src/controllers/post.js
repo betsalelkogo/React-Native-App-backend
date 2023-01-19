@@ -29,8 +29,9 @@ const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     console.log("getPostById");
     console.log(req.params.id);
     try {
-        const posts = yield post_model_1.default.findById(req.params.id);
-        res.status(200).send(posts);
+        const post = yield post_model_1.default.findById(req.params.id);
+        console.log(post);
+        res.status(200).send(post);
     }
     catch (err) {
         res.status(400).send({ error: "fail to get posts from db" });

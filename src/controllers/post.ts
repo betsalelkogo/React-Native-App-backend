@@ -20,8 +20,9 @@ const getPostById = async (req: Request, res: Response) => {
   console.log("getPostById");
   console.log(req.params.id);
   try {
-    const posts = await Post.findById(req.params.id);
-    res.status(200).send(posts);
+    const post = await Post.findById(req.params.id);
+    console.log(post);
+    res.status(200).send(post);
   } catch (err) {
     res.status(400).send({ error: "fail to get posts from db" });
   }
