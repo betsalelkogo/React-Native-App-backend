@@ -7,14 +7,14 @@
 
 import express from "express";
 const router = express.Router();
-import message from "../controllers/message.js";
-import auth from "../controllers/auth.js";
+import message from "../controllers/message";
+import auth from "../controllers/auth";
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     Post:
+ *     Message:
  *       type: object
  *       required:
  *         - message

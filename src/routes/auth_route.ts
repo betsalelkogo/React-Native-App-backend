@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import auth from "../controllers/auth.js";
+import auth from "../controllers/auth";
 
 /**
  * @swagger
@@ -28,6 +28,7 @@ import auth from "../controllers/auth.js";
  *       required:
  *         - email
  *         - password
+ *         - name
  *       properties:
  *         email:
  *           type: string
@@ -35,9 +36,13 @@ import auth from "../controllers/auth.js";
  *         password:
  *           type: string
  *           description: The user password
+ *         name:
+ *           type: string
+ *           description: The user name
  *       example:
  *         email: 'bob@gmail.com'
  *         password: '123456'
+ *         name: 'Bob'
  */
 
 /**

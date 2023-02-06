@@ -27,16 +27,16 @@ db.once("open", () => {
 app.use("/public", express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
-import authRouter from "./routes/auth_route.js";
+import authRouter from "./routes/auth_route";
 app.use("/auth", authRouter);
 
-import messageRouter from "./routes/message_route.js";
+import messageRouter from "./routes/message_route";
 app.use("/message", messageRouter);
 
-import postRouter from "./routes/post_route.js";
+import postRouter from "./routes/post_route";
 app.use("/post", postRouter);
 
-import fileRouter from "./routes/file_route.js";
+import fileRouter from "./routes/file_route";
 app.use("/file", fileRouter);
 
 import swaggerUI from "swagger-ui-express";
