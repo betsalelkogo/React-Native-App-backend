@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-const auth_js_1 = __importDefault(require("../controllers/auth.js"));
+const auth_1 = __importDefault(require("../controllers/auth"));
 /**
  * @swagger
  * components:
@@ -29,6 +29,7 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *       required:
  *         - email
  *         - password
+ *         - name
  *       properties:
  *         email:
  *           type: string
@@ -36,9 +37,13 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *         password:
  *           type: string
  *           description: The user password
+ *         name:
+ *           type: string
+ *           description: The user name
  *       example:
  *         email: 'bob@gmail.com'
  *         password: '123456'
+ *         name: 'Bob'
  */
 /**
  * @swagger
@@ -69,7 +74,7 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *                 description: The error description
  *
  */
-router.post("/register", auth_js_1.default.register);
+router.post("/register", auth_1.default.register);
 /**
  * @swagger
  * /auth/login:
@@ -99,7 +104,7 @@ router.post("/register", auth_js_1.default.register);
  *               refresh_token: '123456...'
  *
  */
-router.post("/login", auth_js_1.default.login);
+router.post("/login", auth_1.default.login);
 /**
  * @swagger
  * /auth/refresh:
@@ -125,7 +130,7 @@ router.post("/login", auth_js_1.default.login);
  *               refresh_token: '123456...'
  *
  */
-router.get("/refresh", auth_js_1.default.refresh);
+router.get("/refresh", auth_1.default.refresh);
 /**
  * @swagger
  * /auth/logout:
@@ -139,6 +144,6 @@ router.get("/refresh", auth_js_1.default.refresh);
  *         description: logout sucess, refresh token is invalidated
  *
  */
-router.get("/logout", auth_js_1.default.logout);
+router.get("/logout", auth_1.default.logout);
 module.exports = router;
 //# sourceMappingURL=auth_route.js.map

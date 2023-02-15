@@ -18,14 +18,14 @@ const router = express_1.default.Router();
  *     Post:
  *       type: object
  *       required:
- *         - id
+ *         - userEmail
  *         - title
  *         - details
  *         - avatarUrl
  *       properties:
- *         id:
+ *         userEmail:
  *           type: string
- *           description: The post id
+ *           description: The user Email that upload the post
  *         title:
  *           type: string
  *           description: The post title
@@ -36,7 +36,7 @@ const router = express_1.default.Router();
  *           type: string
  *           description: The post avatar url
  *       example:
- *         id: '123'
+ *         userEmail: 'Oren@gmail.com'
  *         title: 'Oren'
  *         details: 'Oren Test'
  *         avatarUrl: 'www.mysute/oren.jpg'

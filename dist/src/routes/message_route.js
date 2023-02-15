@@ -10,13 +10,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-const message_js_1 = __importDefault(require("../controllers/message.js"));
-const auth_js_1 = __importDefault(require("../controllers/auth.js"));
+const message_1 = __importDefault(require("../controllers/message"));
+const auth_1 = __importDefault(require("../controllers/auth"));
 /**
  * @swagger
  * components:
  *   schemas:
- *     Post:
+ *     Message:
  *       type: object
  *       required:
  *         - message
@@ -57,7 +57,7 @@ const auth_js_1 = __importDefault(require("../controllers/auth.js"));
  *                  $ref: '#/components/schemas/Message'
  *
  */
-router.get("/", message_js_1.default.getAllMessage);
+router.get("/", message_1.default.getAllMessage);
 /**
  * @swagger
  * /message/{id}:
@@ -82,7 +82,7 @@ router.get("/", message_js_1.default.getAllMessage);
  *               $ref: '#/components/schemas/Message'
  *
  */
-router.get("/:id", auth_js_1.default.authenticateMiddleware, message_js_1.default.getMessageById);
+router.get("/:id", auth_1.default.authenticateMiddleware, message_1.default.getMessageById);
 /**
  * @swagger
  * /message:
@@ -106,7 +106,7 @@ router.get("/:id", auth_js_1.default.authenticateMiddleware, message_js_1.defaul
  *               $ref: '#/components/schemas/Message'
  *
  */
-router.post("/", auth_js_1.default.authenticateMiddleware, message_js_1.default.addNewMessage);
+router.post("/", auth_1.default.authenticateMiddleware, message_1.default.addNewMessage);
 /**
  * @swagger
  * /message/{id}:
@@ -137,6 +137,6 @@ router.post("/", auth_js_1.default.authenticateMiddleware, message_js_1.default.
  *               $ref: '#/components/schemas/Message'
  *
  */
-router.put("/:id", auth_js_1.default.authenticateMiddleware, message_js_1.default.getMessageById);
+router.put("/:id", auth_1.default.authenticateMiddleware, message_1.default.getMessageById);
 module.exports = router;
 //# sourceMappingURL=message_route.js.map
