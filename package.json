@@ -9,9 +9,9 @@
     "lint": "eslint . --ext .ts",
     "dev": "nodemon ./src/app.ts",
     "testAuth": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/auth.test.js",
-    "testPost": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/post.test.js",
+    "testMessage": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/message.test.js",
     "testSocket": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/socket.test.js",
-    "testStudent": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/student.test.js",
+    "testPost": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/posts.test.js",
     "testFile": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests/file.test.js"
   },
   "repository": {
@@ -46,8 +46,6 @@
     "@types/multer": "^1.4.7",
     "@types/mz": "^2.7.4",
     "@types/supertest": "^2.0.12",
-    "@types/swagger-jsdoc": "^6.0.1",
-    "@types/swagger-ui-express": "^4.1.3",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",
