@@ -9,6 +9,8 @@ function sendError(res: Response, error: string) {
   });
 }
 
+const defaultPass = "123456789";
+
 const register = async (req: Request, res: Response) => {
   const { email, name, password } = req.body;
 
@@ -169,4 +171,82 @@ const authenticateMiddleware = async (
   }
 };
 
-export = { login, refresh, register, logout, authenticateMiddleware };
+const googleSignUser = async (req: Request, res: Response) => {
+  try {
+    const { email, name, avatar } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // create a user
+      const salt = await bcrypt.genSalt(10);
+      const encryptedPwd = await bcrypt.hash(defaultPass, salt);
+
+      user = new User({
+        email,
+        password: encryptedPwd,
+        name,
+        avatarUrl: avatar,
+      });
+    }
+
+    const tokens = await generateTokens(user._id.toString());
+
+    if (user.refresh_tokens == null)
+      user.refresh_tokens = [tokens.refreshToken];
+    else user.refresh_tokens.push(tokens.refreshToken);
+
+    await user.save();
+
+    return res.status(200).send({
+      ...tokens,
+      avatar: user.avatarUrl,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (err) {
+    return sendError(res, err + "Failed to authenticate google user");
+  }
+};
+
+async function changeUserPassword(req: Request, res: Response) {
+  const { id } = req.params;
+  const { newPassword, oldPassword } = req.body;
+
+  if (!newPassword || !oldPassword) {
+    return res.status(400).send({
+      msg: "data is missing",
+      status: 400,
+    });
+  }
+
+  const user = await User.findById(id);
+  if (user == null) return sendError(res, "Incorrect user id");
+
+  const match = await bcrypt.compare(oldPassword, user.password);
+  if (!match) return sendError(res, "Incorrect user or password");
+
+  const salt = await bcrypt.genSalt(10);
+  const encryptedPwd = await bcrypt.hash(newPassword, salt);
+
+  user.set({
+    password: encryptedPwd,
+  });
+
+  await user.save();
+
+  res.status(200).send({
+    email: user.email,
+    _id: user._id,
+  });
+}
+
+export = {
+  login,
+  refresh,
+  register,
+  logout,
+  authenticateMiddleware,
+  googleSignUser,
+  changeUserPassword,
+};

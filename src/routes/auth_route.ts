@@ -149,4 +149,39 @@ router.get("/refresh", auth.refresh);
  */
 router.get("/logout", auth.logout);
 
+/**
+ * @swagger
+ * /auth/google-sign-user:
+ *   post:
+ *     summary: User Google to sign in or create a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             email: string;
+ *             name: string;
+ *             avatar: string;
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Google sign user success retuns user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Google sign user  error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               err:
+ *                 type: string
+ *                 description: The error description
+ *
+ */
+router.post("/google-sign-user", auth.googleSignUser);
+
 export = router;

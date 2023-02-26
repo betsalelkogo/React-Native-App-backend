@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const post_1 = __importDefault(require("../controllers/post"));
+const auth_1 = __importDefault(require("../controllers/auth"));
 const router = express_1.default.Router();
 /**
  * @swagger
@@ -61,6 +62,24 @@ const router = express_1.default.Router();
 router.get("/", post_1.default.getAllPosts);
 /**
  * @swagger
+ * /post:
+ *   get:
+ *     summary: get list of post from server
+ *     tags: [Post]
+ *     responses:
+ *       200:
+ *         description: the list of posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/Post'
+ *
+ */
+router.get("/my-post", auth_1.default.authenticateMiddleware, post_1.default.getAllMyPosts);
+/**
+ * @swagger
  * /post/{id}:
  *   get:
  *     summary: get post by id
@@ -105,6 +124,37 @@ router.get("/:id", post_1.default.getPostById);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.post("/", post_1.default.addNewPost);
+router.post("/", auth_1.default.authenticateMiddleware, post_1.default.addNewPost);
+/**
+ * @swagger
+ * /post/{id}:
+ *   put:
+ *     summary: update existing post by id
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the updated post id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       200:
+ *         description: the requested post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *
+ */
+router.put("/:id", auth_1.default.authenticateMiddleware, post_1.default.updatePost);
 module.exports = router;
 //# sourceMappingURL=post_route.js.map

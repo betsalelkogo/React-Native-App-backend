@@ -38,6 +38,8 @@ app.use("/post", postRouter);
 
 import fileRouter from "./routes/file_route.js";
 app.use("/file", fileRouter);
+import userRouter from "./routes/user_rout.js";
+app.use("/user", userRouter);
 
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";

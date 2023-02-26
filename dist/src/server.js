@@ -35,6 +35,8 @@ const post_route_js_1 = __importDefault(require("./routes/post_route.js"));
 app.use("/post", post_route_js_1.default);
 const file_route_js_1 = __importDefault(require("./routes/file_route.js"));
 app.use("/file", file_route_js_1.default);
+const user_rout_js_1 = __importDefault(require("./routes/user_rout.js"));
+app.use("/user", user_rout_js_1.default);
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 if (process.env.NODE_ENV == "development") {
@@ -46,7 +48,7 @@ if (process.env.NODE_ENV == "development") {
                 version: "1.0.0",
                 description: "REST server including authentication using JWT",
             },
-            servers: [{ url: "http://192.168.150.4" }],
+            servers: [{ url: "http://192.168.43.153" }],
         },
         apis: ["./src/routes/*.ts"],
     };

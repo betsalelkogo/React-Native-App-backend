@@ -4,19 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const mongoose_1 = __importDefault(require("mongoose"));
 const postSchema = new mongoose_1.default.Schema({
-    _id: {
+    text: {
         type: String,
         required: true,
     },
-    title: {
-        type: String,
-        required: true,
-    },
-    detail: {
-        type: String,
-        required: true,
-    },
-    userName: {
+    userId: {
         type: String,
         required: true,
     },

@@ -19,6 +19,7 @@ function sendError(res, error) {
         err: error,
     });
 }
+const defaultPass = "123456789";
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, name, password } = req.body;
     if (!email || !password || !name) {
@@ -147,5 +148,68 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
         return sendError(res, "fail validating token");
     }
 });
-module.exports = { login, refresh, register, logout, authenticateMiddleware };
+const googleSignUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, name, avatar } = req.body;
+        let user = yield user_model_1.default.findOne({ email });
+        if (!user) {
+            // create a user
+            const salt = yield bcrypt_1.default.genSalt(10);
+            const encryptedPwd = yield bcrypt_1.default.hash(defaultPass, salt);
+            user = new user_model_1.default({
+                email,
+                password: encryptedPwd,
+                name,
+                avatarUrl: avatar,
+            });
+        }
+        const tokens = yield generateTokens(user._id.toString());
+        if (user.refresh_tokens == null)
+            user.refresh_tokens = [tokens.refreshToken];
+        else
+            user.refresh_tokens.push(tokens.refreshToken);
+        yield user.save();
+        return res.status(200).send(Object.assign(Object.assign({}, tokens), { avatar: user.avatarUrl, name: user.name, email: user.email }));
+    }
+    catch (err) {
+        return sendError(res, err + "Failed to authenticate google user");
+    }
+});
+function changeUserPassword(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { id } = req.params;
+        const { newPassword, oldPassword } = req.body;
+        if (!newPassword || !oldPassword) {
+            return res.status(400).send({
+                msg: "data is missing",
+                status: 400,
+            });
+        }
+        const user = yield user_model_1.default.findById(id);
+        if (user == null)
+            return sendError(res, "Incorrect user id");
+        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!match)
+            return sendError(res, "Incorrect user or password");
+        const salt = yield bcrypt_1.default.genSalt(10);
+        const encryptedPwd = yield bcrypt_1.default.hash(newPassword, salt);
+        user.set({
+            password: encryptedPwd,
+        });
+        yield user.save();
+        res.status(200).send({
+            email: user.email,
+            _id: user._id,
+        });
+    });
+}
+module.exports = {
+    login,
+    refresh,
+    register,
+    logout,
+    authenticateMiddleware,
+    googleSignUser,
+    changeUserPassword,
+};
 //# sourceMappingURL=auth.js.map
