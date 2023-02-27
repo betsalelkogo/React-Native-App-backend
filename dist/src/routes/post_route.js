@@ -59,7 +59,7 @@ const router = express_1.default.Router();
  *                  $ref: '#/components/schemas/Post'
  *
  */
-router.get("/", post_1.default.getAllPosts);
+router.get("/", auth_1.default.authenticateMiddleware, post_1.default.getAllPosts);
 /**
  * @swagger
  * /post:
@@ -102,7 +102,7 @@ router.get("/my-posts", auth_1.default.authenticateMiddleware, post_1.default.ge
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.get("/:id", post_1.default.getPostById);
+router.get("/:id", auth_1.default.authenticateMiddleware, post_1.default.getPostById);
 /**
  * @swagger
  * /post:
@@ -155,6 +155,6 @@ router.post("/", auth_1.default.authenticateMiddleware, post_1.default.addNewPos
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.put("/:id", auth_1.default.authenticateMiddleware, post_1.default.updatePost);
+router.put("/:id", auth_1.default.authenticateMiddleware, post_1.default.updatePostById);
 module.exports = router;
 //# sourceMappingURL=post_route.js.map

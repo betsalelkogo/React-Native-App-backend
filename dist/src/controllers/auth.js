@@ -21,22 +21,25 @@ function sendError(res, error) {
     });
 }
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, name, password } = req.body;
-    if (!email || !password || !name) {
-        return sendError(res, "please provide valid email, password & name");
+    const email = req.body.email;
+    const password = req.body.password;
+    const name = req.body.name;
+    if (email == null || password == null || name == null) {
+        return sendError(res, "please provide valid email and password and name");
     }
     try {
         const user = yield user_model_1.default.findOne({ email: email });
         if (user != null) {
-            return sendError(res, "Email already exists!");
+            return sendError(res, "user already registered, try a different email");
         }
         const salt = yield bcrypt_1.default.genSalt(10);
         const encryptedPwd = yield bcrypt_1.default.hash(password, salt);
         const newUser = new user_model_1.default({
-            email,
+            name: name,
+            email: email,
             password: encryptedPwd,
-            name,
         });
+        console.log(newUser);
         yield newUser.save();
         return res.status(200).send({
             email: email,
@@ -44,7 +47,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (err) {
-        return sendError(res, "failed creating user");
+        return sendError(res, "fail to creat new user");
     }
 });
 function changeUserPassword(req, res) {

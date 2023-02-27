@@ -16,6 +16,11 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    delete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   { timestamps: true }
 );

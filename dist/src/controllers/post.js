@@ -83,7 +83,7 @@ const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     console.log("Add new post");
     try {
         const { userId, text, image } = req.body;
-        console.log(userId, text, image);
+        console.log(req.body);
         const currentUser = yield user_model_1.default.findById(userId);
         if (!currentUser) {
             res
@@ -124,7 +124,7 @@ const editPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).send({ err: "fail adding new post to db" + err });
     }
 });
-const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { image, text, userId } = req.body;
         const { id: postId } = req.params;
@@ -152,8 +152,7 @@ module.exports = {
     getAllMyPosts,
     addNewPost,
     getPostById,
-    updatePost,
+    updatePostById,
     getAllPostsEvent,
-    editPost,
 };
 //# sourceMappingURL=post.js.map
