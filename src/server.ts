@@ -23,8 +23,8 @@ import userRouter from "./routes/user_rout.js";
 import fileRouter from "./routes/file_route.js";
 
 // // @ utils
-// import { getUser } from "./socket/utils";
-// import Message from "./models/message_model.js";
+import { getUser } from "./socket/utils";
+import Message from "./models/message_model.js";
 import messageRouter from "./routes/message_route.js";
 
 // @ chat stuff
@@ -37,15 +37,13 @@ const server = http.createServer(app);
 
 app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
 app.use(bodyParser.json());
+//app.unsubscribe(cookieParser());
 
 if (process.env.NODE_ENV == "test") {
   dotenv.config({ path: "./.testenv" });
 } else {
   dotenv.config();
 }
-
-app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
-app.use(bodyParser.json());
 
 mongoose.connect(process.env.DATABASE_URL); //,{useNewUrlParser:true})
 const db = mongoose.connection;
@@ -69,6 +67,24 @@ app.use("/file", fileRouter);
 
 app.use("/user", userRouter);
 
+io.on("connection", (socket: any) => {
+  console.log(socket.id);
+
+  socket.on("sendMessage", (message: any, senderId: any, callback: any) => {
+    const user = getUser(socket.id);
+    const msgData = {
+      userId: user.id,
+      text: message,
+    };
+    console.log("MsgData", msgData);
+
+    const msg = new Message({ message, sender: user.id });
+    msg.save().then((res) => {
+      io.to().emit("message", res);
+      callback();
+    });
+  });
+});
 if (process.env.NODE_ENV == "development") {
   const options = {
     definition: {
