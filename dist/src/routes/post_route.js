@@ -77,7 +77,7 @@ router.get("/", post_1.default.getAllPosts);
  *                  $ref: '#/components/schemas/Post'
  *
  */
-router.get("/my-post", auth_1.default.authenticateMiddleware, post_1.default.getAllMyPosts);
+router.get("/my-posts", auth_1.default.authenticateMiddleware, post_1.default.getAllMyPosts);
 /**
  * @swagger
  * /post/{id}:

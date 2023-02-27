@@ -58,7 +58,7 @@ const router = express.Router();
  *                  $ref: '#/components/schemas/Post'
  *
  */
-router.get("/", post.getAllPosts);
+router.get("/", auth.authenticateMiddleware, post.getAllPosts);
 /**
  * @swagger
  * /post:
@@ -76,7 +76,7 @@ router.get("/", post.getAllPosts);
  *                  $ref: '#/components/schemas/Post'
  *
  */
-router.get("/my-post", auth.authenticateMiddleware, post.getAllMyPosts);
+router.get("/my-posts", auth.authenticateMiddleware, post.getAllMyPosts);
 
 /**
  * @swagger
@@ -102,7 +102,7 @@ router.get("/my-post", auth.authenticateMiddleware, post.getAllMyPosts);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.get("/:id", post.getPostById);
+router.get("/:id", auth.authenticateMiddleware, post.getPostById);
 
 /**
  * @swagger
@@ -156,6 +156,6 @@ router.post("/", auth.authenticateMiddleware, post.addNewPost);
  *               $ref: '#/components/schemas/Post'
  *
  */
-router.put("/:id", auth.authenticateMiddleware, post.updatePost);
+router.put("/:id", auth.authenticateMiddleware, post.updatePostById);
 
 export = router;

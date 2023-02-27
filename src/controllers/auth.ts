@@ -3,13 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const defaultPass = "123456789";
 function sendError(res: Response, error: string) {
   res.status(400).send({
     err: error,
   });
 }
-
-const defaultPass = "123456789";
 
 const register = async (req: Request, res: Response) => {
   const { email, name, password } = req.body;
@@ -43,6 +42,39 @@ const register = async (req: Request, res: Response) => {
     return sendError(res, "failed creating user");
   }
 };
+
+async function changeUserPassword(req: Request, res: Response) {
+  const { id } = req.params;
+  const { newPassword, oldPassword } = req.body;
+
+  if (!newPassword || !oldPassword) {
+    return res.status(400).send({
+      msg: "data is missing",
+      status: 400,
+    });
+  }
+
+  const user = await User.findById(id);
+  if (user == null) return sendError(res, "Incorrect user id");
+
+  const match = await bcrypt.compare(oldPassword, user.password);
+  if (!match) return sendError(res, "Incorrect user or password");
+
+  const salt = await bcrypt.genSalt(10);
+  const encryptedPwd = await bcrypt.hash(newPassword, salt);
+
+  user.set({
+    password: encryptedPwd,
+  });
+
+  await user.save();
+
+  res.status(200).send({
+    email: user.email,
+    _id: user._id,
+  });
+}
+
 async function generateTokens(userId: string) {
   const accessToken = jwt.sign(
     { id: userId },
@@ -60,25 +92,27 @@ async function generateTokens(userId: string) {
 const login = async (req: Request, res: Response) => {
   const email = req.body.email;
   const password = req.body.password;
+
   if (email == null || password == null) {
     return sendError(res, "please provide valid email and password");
   }
 
   try {
     const user = await User.findOne({ email: email });
-    if (user == null) return sendError(res, "incorrect user or password");
+    if (user == null) return sendError(res, "Incorrect user or password");
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return sendError(res, "incorrect user or password");
+    if (!match) return sendError(res, "Incorrect user or password");
 
     const tokens = await generateTokens(user._id.toString());
 
     if (user.refresh_tokens == null)
       user.refresh_tokens = [tokens.refreshToken];
     else user.refresh_tokens.push(tokens.refreshToken);
-    await user.save();
 
-    return res.status(200).send(tokens);
+    await user.save();
+    console.log("{ ...tokens, id: user._id }: ", { ...tokens, id: user._id });
+    return res.status(200).send({ ...tokens, id: user._id });
   } catch (err) {
     console.log("error: " + err);
     return sendError(res, "fail checking user");
@@ -116,11 +150,10 @@ const refresh = async (req: Request, res: Response) => {
 
     userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] =
       tokens.refreshToken;
-    console.log("refresh token: " + refreshToken);
-    console.log("with token: " + tokens.refreshToken);
+
     await userObj.save();
 
-    return res.status(200).send(tokens);
+    return res.status(200).send({ ...tokens, id: userObj._id });
   } catch (err) {
     return sendError(res, "fail validating token");
   }
@@ -154,23 +187,6 @@ const logout = async (req: Request, res: Response) => {
   }
 };
 
-const authenticateMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const token = getTokenFromRequest(req);
-  if (token == null) return sendError(res, "authentication missing");
-  try {
-    const user = <TokenInfo>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.body.userId = user.id;
-    console.log("token user: " + user);
-    return next();
-  } catch (err) {
-    return sendError(res, "fail validating token");
-  }
-};
-
 const googleSignUser = async (req: Request, res: Response) => {
   try {
     const { email, name, avatar } = req.body;
@@ -198,55 +214,35 @@ const googleSignUser = async (req: Request, res: Response) => {
 
     await user.save();
 
-    return res.status(200).send({
-      ...tokens,
-      avatar: user.avatarUrl,
-      name: user.name,
-      email: user.email,
-    });
+    return res.status(200).send({ ...tokens, id: user._id });
   } catch (err) {
     return sendError(res, err + "Failed to authenticate google user");
   }
 };
 
-async function changeUserPassword(req: Request, res: Response) {
-  const { id } = req.params;
-  const { newPassword, oldPassword } = req.body;
+const authenticateMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = getTokenFromRequest(req);
+  if (token == null) return sendError(res, "authentication missing");
+  try {
+    const user = <TokenInfo>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.body.userId = user.id;
 
-  if (!newPassword || !oldPassword) {
-    return res.status(400).send({
-      msg: "data is missing",
-      status: 400,
-    });
+    return next();
+  } catch (err) {
+    return sendError(res, "fail validating token");
   }
-
-  const user = await User.findById(id);
-  if (user == null) return sendError(res, "Incorrect user id");
-
-  const match = await bcrypt.compare(oldPassword, user.password);
-  if (!match) return sendError(res, "Incorrect user or password");
-
-  const salt = await bcrypt.genSalt(10);
-  const encryptedPwd = await bcrypt.hash(newPassword, salt);
-
-  user.set({
-    password: encryptedPwd,
-  });
-
-  await user.save();
-
-  res.status(200).send({
-    email: user.email,
-    _id: user._id,
-  });
-}
+};
 
 export = {
+  changeUserPassword,
   login,
   refresh,
   register,
   logout,
-  authenticateMiddleware,
   googleSignUser,
-  changeUserPassword,
+  authenticateMiddleware,
 };

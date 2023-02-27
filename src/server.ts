@@ -1,20 +1,52 @@
+// @ Parsing requests and more
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import http from "http";
+
+// @ for .env variables
 import dotenv from "dotenv";
+
+// @ Express
+import express from "express";
+
+// @ DB
+import mongoose from "mongoose";
+
+// @ Swagger
+import swaggerUI from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
+
+// @ Routes
+import authRouter from "./routes/auth_route.js";
+import postRouter from "./routes/post_route.js";
+import userRouter from "./routes/user_rout.js";
+import fileRouter from "./routes/file_route.js";
+
+// // @ utils
+// import { getUser } from "./socket/utils";
+// import Message from "./models/message_model.js";
+import messageRouter from "./routes/message_route.js";
+
+// @ chat stuff
+const socketio = require("socket.io");
+
+const io = socketio(http);
+
+const app = express();
+const server = http.createServer(app);
+
+app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
+app.use(bodyParser.json());
+
 if (process.env.NODE_ENV == "test") {
   dotenv.config({ path: "./.testenv" });
 } else {
   dotenv.config();
 }
 
-import express from "express";
-const app = express();
-import http from "http";
-const server = http.createServer(app);
-
-import bodyParser from "body-parser";
 app.use(bodyParser.urlencoded({ extended: true, limit: "1mb" }));
 app.use(bodyParser.json());
 
-import mongoose from "mongoose";
 mongoose.connect(process.env.DATABASE_URL); //,{useNewUrlParser:true})
 const db = mongoose.connection;
 db.on("error", (error) => {
@@ -27,22 +59,16 @@ db.once("open", () => {
 app.use("/public", express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
-import authRouter from "./routes/auth_route.js";
 app.use("/auth", authRouter);
 
-import messageRouter from "./routes/message_route.js";
 app.use("/message", messageRouter);
 
-import postRouter from "./routes/post_route.js";
 app.use("/post", postRouter);
 
-import fileRouter from "./routes/file_route.js";
 app.use("/file", fileRouter);
-import userRouter from "./routes/user_rout.js";
+
 app.use("/user", userRouter);
 
-import swaggerUI from "swagger-ui-express";
-import swaggerJsDoc from "swagger-jsdoc";
 if (process.env.NODE_ENV == "development") {
   const options = {
     definition: {
