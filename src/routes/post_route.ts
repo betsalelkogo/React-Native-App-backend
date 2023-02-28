@@ -158,4 +158,34 @@ router.post("/", auth.authenticateMiddleware, post.addNewPost);
  */
 router.put("/:id", auth.authenticateMiddleware, post.updatePostById);
 
+/**
+ * @swagger
+ * /post/{id}:
+ *   get:
+ *     summary: get post by id
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     responses:
+ *       200:
+ *         description: the requested post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *
+ */
+router.delete(
+  "/delete-post/:id",
+  auth.authenticateMiddleware,
+  post.deletePostById
+);
+
 export = router;

@@ -38,6 +38,11 @@ const postSchema = new mongoose_1.default.Schema({
         ref: "User",
         required: true,
     },
+    delete: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 }, { timestamps: true });
 module.exports = mongoose_1.default.model("Post", postSchema);
 //# sourceMappingURL=post_model.js.map

@@ -75,7 +75,6 @@ import auth from "../controllers/auth";
  *
  */
 router.post("/register", auth.register);
-
 /**
  * @swagger
  * /auth/login:

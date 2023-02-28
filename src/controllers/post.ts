@@ -107,25 +107,19 @@ const addNewPost = async (req: Request, res: Response) => {
   }
 };
 
-const editPost = async (req: Request, res: Response) => {
+const deletePostById = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
-    const { id } = req.params;
-
+    console.log("DeletePostById" + req.params);
+    const { image, text, userId } = req.body;
+    const myquery = { id: req.params };
     const currentUser = await Users.findById(userId);
 
     if (!currentUser) {
       res
         .status(400)
-        .send({ err: "Failed to create post - user id does not exists" });
+        .send({ err: "Failed to delete post - user id does not exists" });
     }
-
-    const post = await Post.findByIdAndUpdate(id, {
-      ...req.body,
-    });
-
-    await post.save();
-
+    const post = await Post.deleteOne(myquery);
     res.status(200).send(post);
   } catch (err) {
     res.status(400).send({ err: "fail adding new post to db" + err });
@@ -166,4 +160,5 @@ export = {
   getPostById,
   updatePostById,
   getAllPostsEvent,
+  deletePostById,
 };

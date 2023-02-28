@@ -106,18 +106,18 @@ const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(400).send({ err: "fail adding new post to db" + err });
     }
 });
-const editPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deletePostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.body;
-        const { id } = req.params;
+        console.log("DeletePostById" + req.params);
+        const { image, text, userId } = req.body;
+        const myquery = { id: req.params };
         const currentUser = yield user_model_1.default.findById(userId);
         if (!currentUser) {
             res
                 .status(400)
-                .send({ err: "Failed to create post - user id does not exists" });
+                .send({ err: "Failed to delete post - user id does not exists" });
         }
-        const post = yield post_model_1.default.findByIdAndUpdate(id, Object.assign({}, req.body));
-        yield post.save();
+        const post = yield post_model_1.default.deleteOne(myquery);
         res.status(200).send(post);
     }
     catch (err) {
@@ -154,5 +154,6 @@ module.exports = {
     getPostById,
     updatePostById,
     getAllPostsEvent,
+    deletePostById,
 };
 //# sourceMappingURL=post.js.map
