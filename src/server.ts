@@ -25,7 +25,6 @@ import fileRouter from "./routes/file_route.js";
 // // @ utils
 import { getUser } from "./socket/utils";
 import Message from "./models/message_model.js";
-import messageRouter from "./routes/message_route.js";
 
 // @ chat stuff
 const socketio = require("socket.io");
@@ -58,8 +57,6 @@ app.use("/public", express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
 app.use("/auth", authRouter);
-
-app.use("/message", messageRouter);
 
 app.use("/post", postRouter);
 

@@ -8,13 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const message_1 = require("../controllers/message");
 module.exports = (io, socket) => {
-    const sendMessage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-        const to = payload.to;
-        const message = payload.message;
-        const from = socket.data.user;
-        io.to(to).emit("chat:message", { to: to, from: from, message: message });
+    const sendMessage = (data) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!data)
+            return;
+        const { message, userId } = data;
+        const res = yield (0, message_1.saveMessage)(message, userId);
+        io.emit("new_message", res.data);
     });
-    socket.on("chat:send_message", sendMessage);
+    const getMessages = (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, message_1.getAllMessages)();
+        if (!data) {
+            console.log("!Data");
+            io.emit("res_messages", res.data);
+            return;
+        }
+        const { roomId } = data;
+        if (roomId) {
+            io.to(roomId).emit("res_messages", res.data);
+        }
+        else {
+            io.emit("res_messages", res.data);
+        }
+    });
+    socket.on("send_message", sendMessage);
+    socket.on("get_messages", getMessages);
 };
 //# sourceMappingURL=chatHandler.js.map

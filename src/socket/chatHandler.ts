@@ -1,17 +1,34 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { saveMessage, getAllMessages } from "../controllers/message";
 
 export = (
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>
 ) => {
-  const sendMessage = async (payload) => {
-    const to = payload.to;
-    const message = payload.message;
-    const from = socket.data.user;
-
-    io.to(to).emit("chat:message", { to: to, from: from, message: message });
+  const sendMessage = async (data: { message: string; userId: string }) => {
+    if (!data) return;
+    const { message, userId } = data;
+    const res = await saveMessage(message, userId);
+    io.emit("new_message", res.data);
   };
 
-  socket.on("chat:send_message", sendMessage);
+  const getMessages = async (data: { roomId: string }) => {
+    const res = await getAllMessages();
+    if (!data) {
+      console.log("!Data");
+      io.emit("res_messages", res.data);
+      return;
+    }
+    const { roomId } = data;
+
+    if (roomId) {
+      io.to(roomId).emit("res_messages", res.data);
+    } else {
+      io.emit("res_messages", res.data);
+    }
+  };
+
+  socket.on("send_message", sendMessage);
+  socket.on("get_messages", getMessages);
 };

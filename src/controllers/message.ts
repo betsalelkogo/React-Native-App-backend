@@ -1,43 +1,78 @@
+import mongoose, { Schema } from "mongoose";
 import Message from "../models/message_model";
-import NewRequest from "../common/Request";
-import NewResponse from "../common/Response";
-import NewError from "../common/Error";
+import Users from "../models/user_model";
 
-const getAllMessage = async (req: NewRequest) => {
+const getAllMessages = async () => {
   try {
-    let messages = {};
-    if (req.senderId == null) {
-      messages = await Message.find();
-    } else {
-      messages = await Message.find({ sender: req.senderId });
-    }
-    return new NewResponse(messages, req.userId, null);
+    const messages = await Message.aggregate([
+      { $unwind: "$userId" },
+      {
+        $lookup: {
+          from: Users.collection.name,
+          localField: "userId",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+      { $unwind: "$owner" },
+      {
+        $project: {
+          "owner.password": 0,
+          "owner.posts": 0,
+          "owner.createdAt": 0,
+          "owner.refresh_tokens": 0,
+          "owner.updatedAt": 0,
+          "owner.__v": 0,
+          _id: 0,
+          email: 0,
+        },
+      },
+    ]);
+    return { status: "OK", data: messages };
   } catch (err) {
-    return new NewResponse(null, req.userId, new NewError(400, err.message));
+    return { status: "FAIL", data: "" };
   }
 };
 
-const getMessageById = async (req: NewRequest) => {
+const saveMessage = async (message: string, userId: string) => {
   try {
-    const messages = await Message.findById(req.postId);
-    return new NewResponse(messages, req.userId, null);
+    const msg = new Message({
+      message,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
+
+    await msg.save();
+
+    const dbMsg = await Message.aggregate([
+      { $match: { _id: msg._id } },
+      { $unwind: "$userId" },
+      {
+        $lookup: {
+          from: Users.collection.name,
+          localField: "userId",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+      { $unwind: "$owner" },
+      {
+        $project: {
+          "owner.password": 0,
+          "owner.posts": 0,
+          "owner.createdAt": 0,
+          "owner.refresh_tokens": 0,
+          "owner.updatedAt": 0,
+          "owner.__v": 0,
+          _id: 0,
+          email: 0,
+        },
+      },
+    ]);
+
+    return { status: "OK", data: dbMsg[0] };
   } catch (err) {
-    return new NewResponse(null, req.userId, new NewError(400, err.message));
+    return { status: "FAIL", data: err };
   }
 };
 
-const addNewMessage = async (req: NewRequest) => {
-  const message = new Message({
-    message: req.body.message,
-    sender: req.userId,
-  });
-
-  try {
-    const newMessage = await message.save();
-    return new NewResponse(newMessage, req.userId, null);
-  } catch (err) {
-    return new NewResponse(null, req.userId, new NewError(400, err.message));
-  }
-};
-
-export = { addNewMessage, getAllMessage, getMessageById };
+export { getAllMessages, saveMessage };

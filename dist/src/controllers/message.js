@@ -11,45 +11,81 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.saveMessage = exports.getAllMessages = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const message_model_1 = __importDefault(require("../models/message_model"));
-const Response_1 = __importDefault(require("../common/Response"));
-const Error_1 = __importDefault(require("../common/Error"));
-const getAllMessage = (req) => __awaiter(void 0, void 0, void 0, function* () {
+const user_model_1 = __importDefault(require("../models/user_model"));
+const getAllMessages = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let messages = {};
-        if (req.senderId == null) {
-            messages = yield message_model_1.default.find();
-        }
-        else {
-            messages = yield message_model_1.default.find({ sender: req.senderId });
-        }
-        return new Response_1.default(messages, req.userId, null);
+        const messages = yield message_model_1.default.aggregate([
+            { $unwind: "$userId" },
+            {
+                $lookup: {
+                    from: user_model_1.default.collection.name,
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "owner",
+                },
+            },
+            { $unwind: "$owner" },
+            {
+                $project: {
+                    "owner.password": 0,
+                    "owner.posts": 0,
+                    "owner.createdAt": 0,
+                    "owner.refresh_tokens": 0,
+                    "owner.updatedAt": 0,
+                    "owner.__v": 0,
+                    _id: 0,
+                    email: 0,
+                },
+            },
+        ]);
+        return { status: "OK", data: messages };
     }
     catch (err) {
-        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
+        return { status: "FAIL", data: "" };
     }
 });
-const getMessageById = (req) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getAllMessages = getAllMessages;
+const saveMessage = (message, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const messages = yield message_model_1.default.findById(req.postId);
-        return new Response_1.default(messages, req.userId, null);
+        const msg = new message_model_1.default({
+            message,
+            userId: new mongoose_1.default.Types.ObjectId(userId),
+        });
+        yield msg.save();
+        const dbMsg = yield message_model_1.default.aggregate([
+            { $match: { _id: msg._id } },
+            { $unwind: "$userId" },
+            {
+                $lookup: {
+                    from: user_model_1.default.collection.name,
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "owner",
+                },
+            },
+            { $unwind: "$owner" },
+            {
+                $project: {
+                    "owner.password": 0,
+                    "owner.posts": 0,
+                    "owner.createdAt": 0,
+                    "owner.refresh_tokens": 0,
+                    "owner.updatedAt": 0,
+                    "owner.__v": 0,
+                    _id: 0,
+                    email: 0,
+                },
+            },
+        ]);
+        return { status: "OK", data: dbMsg[0] };
     }
     catch (err) {
-        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
+        return { status: "FAIL", data: err };
     }
 });
-const addNewMessage = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const message = new message_model_1.default({
-        message: req.body.message,
-        sender: req.userId,
-    });
-    try {
-        const newMessage = yield message.save();
-        return new Response_1.default(newMessage, req.userId, null);
-    }
-    catch (err) {
-        return new Response_1.default(null, req.userId, new Error_1.default(400, err.message));
-    }
-});
-module.exports = { addNewMessage, getAllMessage, getMessageById };
+exports.saveMessage = saveMessage;
 //# sourceMappingURL=message.js.map

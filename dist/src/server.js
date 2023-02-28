@@ -22,7 +22,6 @@ const file_route_js_1 = __importDefault(require("./routes/file_route.js"));
 // // @ utils
 const utils_1 = require("./socket/utils");
 const message_model_js_1 = __importDefault(require("./models/message_model.js"));
-const message_route_js_1 = __importDefault(require("./routes/message_route.js"));
 // @ chat stuff
 const socketio = require("socket.io");
 const io = socketio(http_1.default);
@@ -48,7 +47,6 @@ db.once("open", () => {
 app.use("/public", express_1.default.static("public"));
 app.use("/uploads", express_1.default.static("uploads"));
 app.use("/auth", auth_route_js_1.default);
-app.use("/message", message_route_js_1.default);
 app.use("/post", post_route_js_1.default);
 app.use("/file", file_route_js_1.default);
 app.use("/user", user_rout_js_1.default);
